@@ -1,11 +1,12 @@
 using System;
 using Unity.Mathematics;
+using Unity.VisualScripting;
 using UnityEngine;
 using UnityEngine.Splines;
 
 namespace EntilandVR.DosCuatro.CDI.G_Cuatro
 {
-    [ExecuteInEditMode]
+    
     public class RailSplineBuilder : MonoBehaviour
     {
         [Header("SPLINE CONTAINERS")]
@@ -34,6 +35,7 @@ namespace EntilandVR.DosCuatro.CDI.G_Cuatro
         private void OnValidate()
         {
             _halfRailsWidth = _railsWidth / 2;
+            Start();
         }
         
 
@@ -57,8 +59,9 @@ namespace EntilandVR.DosCuatro.CDI.G_Cuatro
                 _coreSplineInstantiate.itemsToInstantiate = new[] { plank };
                 _coreSplineInstantiate.MinSpacing = 6.0f;
             }
+
             
-            OnValidate();
+            
             Setup();
             BuildSideSplines();
             
@@ -70,14 +73,19 @@ namespace EntilandVR.DosCuatro.CDI.G_Cuatro
 
         private void Update()
         {
+            if (_leftSpline == null || _rightSpline == null)
+            {
+                Setup();
+            }
+
+
             BuildSideSplines();
         }
         
 
         private void Setup()
         {
-            _coreSpline = _coreSplineContainer.Splines[0];
-            
+            _coreSpline = _coreSplineContainer.Splines[0];            
             
             _numberOfPoints = NumberOfCorePoints + ((NumberOfCorePoints - 1) * _extraResolution);
             
@@ -121,9 +129,7 @@ namespace EntilandVR.DosCuatro.CDI.G_Cuatro
         }
         
         private void DoDrawGizmos(float3 position, float3 tangent, float3 up, float3 normal)
-        {
-            Vector3 positionV = new Vector3(position.x, position.y, position.z);
-            
+        {            
             Gizmos.color = Color.cyan;
             Vector3 upPosition = position + up;
             Gizmos.DrawLine(position, upPosition);
@@ -137,7 +143,7 @@ namespace EntilandVR.DosCuatro.CDI.G_Cuatro
             Vector3 rightPosition = position - normal;
             Gizmos.DrawLine(position, rightPosition);
             
-                
+            /*                
             Gizmos.color = Color.yellow;
             Vector3 tangentInPosition = position + tangent;
             Gizmos.DrawLine(position, tangentInPosition);
@@ -145,15 +151,8 @@ namespace EntilandVR.DosCuatro.CDI.G_Cuatro
             Gizmos.color = Color.black;
             Vector3 tangentOutPosition = position - tangent;
             Gizmos.DrawLine(position, tangentOutPosition);
-            
-            
-            Gizmos.color = Color.LerpUnclamped(Color.green, Gizmos.color = Color.black, 0.5f);
-            Vector3 halfLeft = Vector3.LerpUnclamped(normal, -tangent, 0.5f).normalized + positionV;
-            Gizmos.DrawLine(position, halfLeft);
-            
-            Gizmos.color = Color.LerpUnclamped(Color.red, Gizmos.color = Color.yellow, 0.5f);
-            Vector3 halfRight = Vector3.LerpUnclamped(-normal, tangent, 0.5f).normalized + positionV;
-            Gizmos.DrawLine(position, halfRight);
+
+            */
         }
 
 
